@@ -48,3 +48,16 @@ jobs:
     file: attendee-service-source/ci/tasks/smoke-test.yml
     params:
       ATTENDEE_SERVICE_URL: https://attendee-service-conventicular-fremitus.apps.cumuluslabs.io  #<---- REPLACE ME
+
+- name: deploy-green
+  public: true
+  plan:
+  - get: attendee-service-source
+    trigger: true
+    passed: [smoke_test]
+  - task: package
+    file: attendee-service-source/ci/tasks/package.yml
+  - put: deploy-attendee-service
+    params:
+      manifest: attendee-service-source/manifest-green.yml
+      path: package-output/attendee-service.jar
